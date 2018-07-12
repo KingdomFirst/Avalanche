@@ -27,6 +27,7 @@ using Plugin.Permissions.Abstractions;
 using Android.Util;
 using Android.Gms.Common;
 using Firebase.Iid;
+using Avalanche.Utilities;
 
 namespace Avalanche.Droid
 {
@@ -41,15 +42,6 @@ namespace Avalanche.Droid
 
             base.OnCreate( bundle );
 
-            if ( Intent.Extras != null )
-            {
-                foreach ( var key in Intent.Extras.KeySet() )
-                {
-                    var value = Intent.Extras.GetString( key );
-                    Log.Debug( TAG, "Key: {0} Value: {1}", key, value );
-                }
-            }
-
             Plugin.CurrentActivity.CrossCurrentActivity.Current.Activity = this;
             CachedImageRenderer.Init();
             var t = IsPlayServicesAvailable();
@@ -60,6 +52,9 @@ namespace Avalanche.Droid
 
         public bool IsPlayServicesAvailable()
         {
+            //This code is left in to help you debug your firebase for android
+            //You will need to rebuild your app each time you wish to make a change
+            //and use Firebase. This is a long standing Xamarin Android issue.
             int resultCode = GoogleApiAvailability.Instance.IsGooglePlayServicesAvailable( this );
             if ( resultCode != ConnectionResult.Success )
             {
@@ -74,8 +69,13 @@ namespace Avalanche.Droid
             }
             else
             {
-
-                debug = FirebaseInstanceId.Instance.Token;
+                try
+                {
+                    debug = FirebaseInstanceId.Instance.Token;
+                }
+                catch ( Exception e )
+                {
+                }
                 return true;
             }
         }

@@ -16,15 +16,15 @@ namespace FCMClient
         const string TAG = "AvalancheFirebaseMsgService";
         public override void OnMessageReceived( RemoteMessage message )
         {
-            Log.Debug( TAG, "From: " + message.From );
-            Log.Debug( TAG, "Notification Message Body: " + message.GetNotification().Body );
             Notification.Builder builder = new Notification.Builder( this )
                      .SetContentText( message.GetNotification().Body )
                      .SetSmallIcon( Resource.Drawable.notification )
                      .SetAutoCancel( true )
                      .SetVisibility( NotificationVisibility.Public );
 
-
+            var textStyle = new Notification.BigTextStyle();
+            textStyle.BigText( message.GetNotification().Body );
+            builder.SetStyle( textStyle );
 
             Intent intent = new Intent( this, typeof( MainActivity ) );
             const int pendingIntentId = 0;

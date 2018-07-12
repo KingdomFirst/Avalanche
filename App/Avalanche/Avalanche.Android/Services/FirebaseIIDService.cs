@@ -3,6 +3,7 @@ using Android.App;
 using Firebase.Iid;
 using Firebase.Messaging;
 using Android.Util;
+using Avalanche.Utilities;
 
 namespace SoutheastChristian.Droid.Services
 {
@@ -14,12 +15,11 @@ namespace SoutheastChristian.Droid.Services
         public override void OnTokenRefresh()
         {
             var refreshedToken = FirebaseInstanceId.Instance.Token;
-            Log.Debug( TAG, "Refreshed token: " + refreshedToken );
             SendRegistrationToServer( refreshedToken );
         }
         void SendRegistrationToServer( string token )
         {
-            // Add custom implementation, as needed.
+            FCMHelper.RegisterFCMToken( token );
         }
     }
 }
