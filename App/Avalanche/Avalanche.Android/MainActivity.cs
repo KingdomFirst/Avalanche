@@ -24,12 +24,16 @@ using Android.OS;
 using FFImageLoading.Forms.Droid;
 using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
+using Android.Util;
+using Android.Gms.Common;
+using Firebase.Iid;
 
 namespace Avalanche.Droid
 {
     [Activity( Label = "Southeast Christian", Icon = "@drawable/icon", Theme = "@style/MainTheme", ScreenOrientation = ScreenOrientation.Sensor, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation )]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
+        const string TAG = "MainActivity";
         protected override void OnCreate( Bundle bundle )
         {
             TabLayoutResource = Resource.Layout.Tabbar;
@@ -37,11 +41,43 @@ namespace Avalanche.Droid
 
             base.OnCreate( bundle );
 
+            if ( Intent.Extras != null )
+            {
+                foreach ( var key in Intent.Extras.KeySet() )
+                {
+                    var value = Intent.Extras.GetString( key );
+                    Log.Debug( TAG, "Key: {0} Value: {1}", key, value );
+                }
+            }
+
             Plugin.CurrentActivity.CrossCurrentActivity.Current.Activity = this;
             CachedImageRenderer.Init();
-
+            var t = IsPlayServicesAvailable();
             global::Xamarin.Forms.Forms.Init( this, bundle );
             LoadApplication( new Avalanche.App() );
+        }
+        string debug;
+
+        public bool IsPlayServicesAvailable()
+        {
+            int resultCode = GoogleApiAvailability.Instance.IsGooglePlayServicesAvailable( this );
+            if ( resultCode != ConnectionResult.Success )
+            {
+                if ( GoogleApiAvailability.Instance.IsUserResolvableError( resultCode ) )
+                    debug = GoogleApiAvailability.Instance.GetErrorString( resultCode );
+                else
+                {
+                    debug = "This device is not supported";
+                    Finish();
+                }
+                return false;
+            }
+            else
+            {
+
+                debug = FirebaseInstanceId.Instance.Token;
+                return true;
+            }
         }
     }
 }
