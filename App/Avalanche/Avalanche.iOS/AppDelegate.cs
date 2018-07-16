@@ -1,5 +1,6 @@
 ﻿// <copyright>
 // Copyright Southeast Christian Church
+// Copyright Mark Lee
 //
 // Licensed under the  Southeast Christian Church License (the "License");
 // you may not use this file except in compliance with the License.
@@ -32,16 +33,11 @@ namespace Avalanche.iOS
     [Register( "AppDelegate" )]
     public partial class AppDelegate : global::Xamarin.Forms.Platform.iOS.FormsApplicationDelegate, IUNUserNotificationCenterDelegate, IMessagingDelegate
     {
-
-        public event EventHandler<UserInfoEventArgs> MessageReceived;
-
-        //
         // This method is invoked when the application has loaded and is ready to run. In this 
         // method you should instantiate the window, load the UI into it and then make the window
         // visible.
         //
         // You have 17 seconds to return from this method, or iOS will terminate your application.
-        //
         public override bool FinishedLaunching( UIApplication app, NSDictionary options )
         {
             Firebase.Core.App.Configure();
@@ -93,18 +89,6 @@ namespace Avalanche.iOS
 
         public override void DidReceiveRemoteNotification( UIApplication application, NSDictionary userInfo, Action<UIBackgroundFetchResult> completionHandler )
         {
-            // Handle Notification messages in the background and foreground.
-            // Handle Data messages for iOS 9 and below.
-
-            // If you are receiving a notification message while your app is in the background,
-            // this callback will not be fired till the user taps on the notification launching the application.
-            // TODO: Handle data of notification
-
-            // With swizzling disabled you must let Messaging know about the message, for Analytics
-            //Messaging.SharedInstance.AppDidReceiveMessage (userInfo);
-
-            HandleMessage( userInfo );
-
             // Print full message.
             LogInformation( nameof( DidReceiveRemoteNotification ), userInfo );
 
@@ -114,63 +98,7 @@ namespace Avalanche.iOS
         [Export( "messaging:didReceiveMessage:" )]
         public void DidReceiveMessage( Messaging messaging, RemoteMessage remoteMessage )
         {
-            // Handle Data messages for iOS 10 and above.
-            HandleMessage( remoteMessage.AppData );
-
             LogInformation( nameof( DidReceiveMessage ), remoteMessage.AppData );
-        }
-
-        void HandleMessage( NSDictionary message )
-        {
-            if ( MessageReceived != null )
-            {
-                MessageType messageType;
-                if ( message.ContainsKey( new NSString( "aps" ) ) )
-                    messageType = MessageType.Notification;
-                else
-                    messageType = MessageType.Data;
-
-                var e = new UserInfoEventArgs( message, messageType );
-                MessageReceived( this, e );
-            }
-            else
-            {
-                string title = "";
-                string body = "";
-                var apsDictionary = message["aps"] as NSDictionary;
-                if ( apsDictionary["alert"] is NSDictionary alertDictionary )
-                {
-                    title = alertDictionary["title"].ToString();
-                    body = alertDictionary["body"].ToString();
-                }
-                else
-                {
-                    body = apsDictionary["alert"].ToString();
-                }
-                var window = UIApplication.SharedApplication.KeyWindow;
-                var vc = window.RootViewController;
-                while ( vc.PresentedViewController != null )
-                {
-                    vc = vc.PresentedViewController;
-                }
-                ShowMessage( title, body, vc );
-            }
-        }
-
-        public static void ShowMessage( string title, string message, UIViewController fromViewController, Action actionForOk = null )
-        {
-            if ( UIDevice.CurrentDevice.CheckSystemVersion( 8, 0 ) )
-            {
-                var alert = UIAlertController.Create( title, message, UIAlertControllerStyle.Alert );
-                alert.AddAction( UIAlertAction.Create( "Ok", UIAlertActionStyle.Default, ( obj ) => actionForOk?.Invoke() ) );
-                fromViewController.PresentViewController( alert, true, null );
-            }
-            else
-            {
-                var alert = new UIAlertView( title, message, null, "Ok", null );
-                alert.Clicked += ( sender, e ) => actionForOk?.Invoke();
-                alert.Show();
-            }
         }
 
         // Receive displayed notifications for iOS 10 devices.

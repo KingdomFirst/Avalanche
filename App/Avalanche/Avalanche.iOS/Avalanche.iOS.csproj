@@ -112,7 +112,6 @@
     <Compile Include="CustomRenderers\VideoPlayerRenderer.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
-    <Compile Include="UserInfoViewController.cs" />
     <None Include="Entitlements.plist" />
     <BundleResource Include="GoogleService-Info.plist" />
     <None Include="Info.plist">
