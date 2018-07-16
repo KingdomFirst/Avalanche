@@ -20,9 +20,9 @@
 	<key>MinimumOSVersion</key>
 	<string>10.0</string>
 	<key>CFBundleDisplayName</key>
-	<string>Avalanche</string>
+	<string>Southeast Christian</string>
 	<key>CFBundleIdentifier</key>
-	<string>org.secc.Avalanche</string>
+	<string>org.southeastchristian.seccapp</string>
 	<key>CFBundleVersion</key>
 	<string>1.0</string>
 	<key>CFBundleIconFiles</key>
@@ -54,17 +54,17 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>fontawesome.ttf</string>
-    <string>CustomIcons.ttf</string>
-    <string>Comic-Sans-MS.ttf</string>
-    <string>slabo-27px-v4-latin-regular.ttf</string>
-    <string>OpenSans-Regular.ttf</string>
-    <string>ProximaNova-Black.ttf</string>
-    <string>ProximaNova-Bold.ttf</string>
-    <string>ProximaNova-Extrabld.ttf</string>
-    <string>ProximaNova-Light.ttf</string>
-    <string>ProximaNova-Regular.ttf</string>
-    <string>ProximaNova-Semibold.ttf</string>
-    <string>ProximaNova-Thin.ttf</string>
+		<string>CustomIcons.ttf</string>
+		<string>Comic-Sans-MS.ttf</string>
+		<string>slabo-27px-v4-latin-regular.ttf</string>
+		<string>OpenSans-Regular.ttf</string>
+		<string>ProximaNova-Black.ttf</string>
+		<string>ProximaNova-Bold.ttf</string>
+		<string>ProximaNova-Extrabld.ttf</string>
+		<string>ProximaNova-Light.ttf</string>
+		<string>ProximaNova-Regular.ttf</string>
+		<string>ProximaNova-Semibold.ttf</string>
+		<string>ProximaNova-Thin.ttf</string>
 	</array>
 	<key>UIMainStoryboardFile</key>
 	<string>LaunchScreen</string>
@@ -77,6 +77,7 @@
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>
+		<string>remote-notification</string>
 	</array>
 </dict>
 </plist>
