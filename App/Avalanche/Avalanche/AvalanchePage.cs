@@ -35,66 +35,59 @@ namespace Avalanche
             Children.Clear();
             AvalancheNavigation.Footer = null;
             mainPage = new MainPage();
-            App.Navigation = new Xamarin.Forms.NavigationPage( mainPage );
-            Children.Add( App.Navigation );
+            App.Navigation = new Xamarin.Forms.NavigationPage(mainPage);
+            Children.Add(App.Navigation);
             observableResource.PropertyChanged += ObservableResource_PropertyChanged;
-            RockClient.GetResource( observableResource, "/api/avalanche/home" );
-            if ( !App.Current.Properties.ContainsKey( "SecondRun" ) )
+            RockClient.GetResource(observableResource, "/api/avalanche/home");
+            if (!App.Current.Properties.ContainsKey("SecondRun"))
             {
-                App.Navigation.Navigation.PushModalAsync( new LaunchPage() );
+                App.Navigation.Navigation.PushModalAsync(new LaunchPage());
                 App.Current.Properties["SecondRun"] = true;
             }
         }
 
-        private void ObservableResource_PropertyChanged( object sender, System.ComponentModel.PropertyChangedEventArgs e )
+        private void ObservableResource_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             HandleResponse();
         }
 
         private void HandleResponse()
         {
-            if ( observableResource.Resource.Page != null )
+            if (observableResource.Resource.Page != null)
             {
                 mainPage.observableResource.Resource = observableResource.Resource.Page;
             }
             bool addFooter = AvalancheNavigation.Footer == null;
-            if ( observableResource.Resource.Footer != null )
+            if (observableResource.Resource.Footer != null)
             {
-                AvalancheNavigation.Footer = new MenuPage( observableResource.Resource.Footer );
-                if ( addFooter )
+                AvalancheNavigation.Footer = new MenuPage(observableResource.Resource.Footer);
+                if (addFooter)
                 {
-                    Children.Insert( 0, AvalancheNavigation.Footer );
+                    Children.Insert(0, AvalancheNavigation.Footer);
                 }
             }
             AvalancheNavigation.AllowResize = true;
         }
 
-        protected override void OnSizeAllocated( double width, double height )
+        protected override void OnSizeAllocated(double width, double height)
         {
-            base.OnSizeAllocated( width, height );
+            base.OnSizeAllocated(width, height);
             bool localPortrait = true;
 
             localPortrait = height > width;
 
-            if ( AvalancheNavigation.AllowResize || localPortrait != isPortrait )
+            if (AvalancheNavigation.AllowResize || localPortrait != isPortrait)
             {
-                Device.BeginInvokeOnMainThread( () =>
+                Device.BeginInvokeOnMainThread(() =>
                 {
                     AvalancheNavigation.SafeInset = On<Xamarin.Forms.PlatformConfiguration.iOS>().SafeAreaInsets();
 
-                    if ( AvalancheNavigation.Footer != null )
+                    if (AvalancheNavigation.Footer != null)
                     {
-                        if ( AvalancheNavigation.Footer.Menu.Height != -1 )
-                        {
-                            AvalancheNavigation.YOffSet = AvalancheNavigation.Footer.Menu.Height + AvalancheNavigation.SafeInset.Bottom;
-                        }
-                        else
-                        {
-                            return;
-                        }
+                        AvalancheNavigation.YOffSet = 60 + AvalancheNavigation.SafeInset.Bottom;
                         isPortrait = localPortrait;
-                        AvalancheNavigation.Footer.Menu.Margin = new Thickness( AvalancheNavigation.SafeInset.Left, 0, AvalancheNavigation.SafeInset.Right, 0 );
-                        AvalancheNavigation.Footer.TranslationY = mainPage.Content.Height - AvalancheNavigation.YOffSet;
+                        AvalancheNavigation.Footer.Menu.Margin = new Thickness(AvalancheNavigation.SafeInset.Left, 0, AvalancheNavigation.SafeInset.Right, 0);
+                        AvalancheNavigation.Footer.TranslationY = height - AvalancheNavigation.YOffSet;
                         AvalancheNavigation.SafeInset.Bottom = 0;
                     }
                     else
@@ -103,18 +96,18 @@ namespace Avalanche
                     }
 
                     mainPage.Content.Margin = new Thickness(
-                        AvalancheNavigation.SafeInset.Left,
-                        AvalancheNavigation.YOffSet + AvalancheNavigation.SafeInset.Top,
-                        AvalancheNavigation.SafeInset.Right,
-                        AvalancheNavigation.SafeInset.Bottom );
+                            AvalancheNavigation.SafeInset.Left,
+                            AvalancheNavigation.YOffSet + AvalancheNavigation.SafeInset.Top,
+                            AvalancheNavigation.SafeInset.Right,
+                            AvalancheNavigation.SafeInset.Bottom);
 
                     App.Navigation.TranslationY = AvalancheNavigation.YOffSet * -1;
-                } );
+                });
             }
             AvalancheNavigation.AllowResize = false;
         }
 
-        protected override Xamarin.Forms.Page CreateDefault( object item )
+        protected override Xamarin.Forms.Page CreateDefault(object item)
         {
             return new Xamarin.Forms.Page();
         }
