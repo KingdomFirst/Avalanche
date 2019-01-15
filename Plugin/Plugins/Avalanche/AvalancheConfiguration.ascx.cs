@@ -21,8 +21,8 @@ using Rock.Data;
 using Rock.Model;
 using Rock.Web.Cache;
 using System.Linq;
-using org.secc.OAuth.Model;
-using org.secc.OAuth.Data;
+//using org.secc.OAuth.Model;
+//using org.secc.OAuth.Data;
 
 namespace RockWeb.Plugins.Avalanche
 {

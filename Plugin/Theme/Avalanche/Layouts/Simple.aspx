@@ -17,7 +17,17 @@
             <p><strong>Error</strong></p>
             <span class="ajax-error-message"></span>
         </div>
-
+        <div class="row">
+            <div class="col-md-4">
+                <Rock:Zone Name="TopLeft" runat="server" />
+            </div>
+            <div class="col-md-4">
+                <Rock:Zone Name="TopCenter" runat="server" />
+            </div>
+            <div class="col-md-4">
+                <Rock:Zone Name="TopRight" runat="server" />
+            </div>
+        </div>
         <div class="row">
             <div class="col-md-12">
                 <Rock:Zone Name="Featured" runat="server" />
