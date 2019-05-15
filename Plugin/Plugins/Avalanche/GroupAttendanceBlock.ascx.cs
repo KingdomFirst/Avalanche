@@ -83,6 +83,7 @@ namespace RockWeb.Plugins.Avalanche
             {
                 AttendanceService attendanceService = new AttendanceService( rockContext );
                 var occurances = attendanceService.Queryable().Where( a => a.Occurrence.GroupId == group.Id )
+                    .OrderBy( s => s.StartDateTime )
                     .DistinctBy( s => s.StartDateTime )
                     .Select( s => s.StartDateTime )
                     .Take( 50 )
@@ -96,7 +97,7 @@ namespace RockWeb.Plugins.Avalanche
 
                     var prevSchedules = group.Schedule
                         .GetScheduledStartTimes( Rock.RockDateTime.Today.AddYears( -1 ), Rock.RockDateTime.Today.AddDays( 1 ) )
-                        .OrderByDescending( o => o )
+                        .OrderBy( o => o )
                         .Take( 10 )
                         .ToDictionary( s => ( s - new DateTime( 1970, 1, 1, 0, 0, 0, DateTimeKind.Utc ) ).TotalSeconds.ToString(),
                                          s => s.ToString( "MMM d, yyyy -  h:mmtt" ) );
@@ -127,6 +128,7 @@ namespace RockWeb.Plugins.Avalanche
                         occurances.AddOrIgnore( ( schedule - new DateTime( 1970, 1, 1, 0, 0, 0, DateTimeKind.Utc ) ).TotalSeconds.ToString(), schedule.ToString( "MMM d, yyyy -  h:mmtt" ) );
                     }
                 }
+                occurances = occurances.OrderBy( o => o.Key ).ToDictionary( o => o.Key, o => o.Value );
                 if ( occurances.Any() && string.IsNullOrWhiteSpace( currentOccurance ) )
                 {
                     currentOccurance = occurances.Last().Key;
@@ -308,7 +310,7 @@ namespace RockWeb.Plugins.Avalanche
                             var attendancePerson = new PersonService( rockContext ).Get( personId );
                             if ( attendancePerson != null )
                             {
-                                attendanceService.AddOrUpdate( attendancePerson.PrimaryAliasId ?? 0, occurenceDate, group.Id, null, group.ScheduleId, group.CampusId );
+                                attendanceItem = attendanceService.AddOrUpdate( attendancePerson.PrimaryAliasId ?? 0, occurenceDate, group.Id, null, group.ScheduleId, group.CampusId );
                             }
                         }
 
